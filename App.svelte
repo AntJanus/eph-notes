@@ -9,8 +9,8 @@
 			import { faListAlt } from "@fortawesome/free-solid-svg-icons/faListAlt";
 			import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 
-			import TextEditor from "./components/Editors/TextEditor";
-			import ToDoList from "./components/Editors/ToDoList";
+			import TextEditor from "./components/Editors/TextEditor.svelte";
+			import ToDoList from "./components/Editors/ToDoList.svelte";
 
 			let notes = [
 			  {
