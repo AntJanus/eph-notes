@@ -1,6 +1,6 @@
 <script>
 			import { log, runEffect } from "./utils";
-			import { v4 as uuid } from "uuid";
+			import uuid from "uuid/v4";
 			import Icon from "fa-svelte";
 			import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 			import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
