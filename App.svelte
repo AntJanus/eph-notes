@@ -1,156 +1,157 @@
 <script>
-			import { log, runEffect } from "./utils";
-			import { v4 as uuid } from "uuid";
-			import Icon from "fa-svelte";
-			import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
-			import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
-			import { faSave } from "@fortawesome/free-solid-svg-icons/faSave";
-			import { faStickyNote } from "@fortawesome/free-solid-svg-icons/faStickyNote";
-			import { faListAlt } from "@fortawesome/free-solid-svg-icons/faListAlt";
-			import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
+		import { log, runEffect } from "./utils";
+		import { v4 as uuid } from "uuid";
+		import Icon from "fa-svelte";
+		import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
+		import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
+		import { faSave } from "@fortawesome/free-solid-svg-icons/faSave";
+		import { faStickyNote } from "@fortawesome/free-solid-svg-icons/faStickyNote";
+		import { faListAlt } from "@fortawesome/free-solid-svg-icons/faListAlt";
+		import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 
-			import TextEditor from "./components/Editors/TextEditor.svelte";
-			import ToDoList from "./components/Editors/ToDoList.svelte";
+		import TextEditor from "./components/Editors/TextEditor.svelte";
+		import ToDoList from "./components/Editors/ToDoList.svelte";
 
-			let notes = [
-			  {
-			    id: uuid(),
-			    title: "Note 1",
-			    content: "notes 123445",
-			    type: "text",
-			    created_at: new Date(),
-			    updated_at: new Date()
-			  },
-			  {
-			    id: uuid(),
-			    title: "Note 2",
-			    content: "note445",
-			    type: "text",
-			    created_at: new Date(),
-			    updated_at: new Date()
-			  }
-			];
-			let currentNote = 0;
-			let noteEditor;
-			let editNameNote = {};
-			let editNameEditor;
-			let lastUpdated = null;
+		let notes = [
+		  {
+		    id: uuid(),
+		    title: "Note 1",
+		    status: "active",
+		    content: "notes 123445",
+		    type: "text",
+		    created_at: new Date(),
+		    updated_at: new Date()
+		  },
+		  {
+		    id: uuid(),
+		    title: "Note 2",
+		    content: "note445",
+		    type: "text",
+		    created_at: new Date(),
+		    updated_at: new Date()
+		  }
+		];
+		let currentNote = 0;
+		let noteEditor;
+		let editNameNote = {};
+		let editNameEditor;
+		let lastUpdated = null;
 
-			const switchToNote = idx => e => {
-			  e.preventDefault();
-			  currentNote = idx;
-			};
+		const switchToNote = idx => e => {
+		  e.preventDefault();
+		  currentNote = idx;
+		};
 
-			const addNote = e => {
-			  e.preventDefault();
+		const addNote = e => {
+		  e.preventDefault();
 
-			  notes = [
-			    ...notes,
-			    {
-			      id: uuid(),
-			      title: "New note",
-			      type: "text",
-			      content: "",
-			      created_at: new Date(),
-			      updated_at: new Date()
-			    }
-			  ];
-			};
+		  notes = [
+		    ...notes,
+		    {
+		      id: uuid(),
+		      title: "New note",
+		      type: "text",
+		      content: "",
+		      created_at: new Date(),
+		      updated_at: new Date()
+		    }
+		  ];
+		};
 
-			const addTaskList = e => {
-			  e.preventDefault();
+		const addTaskList = e => {
+		  e.preventDefault();
 
-			  notes = [
-			    ...notes,
-			    {
-			      id: uuid(),
-			      title: "New task list",
-			      type: "tasklist",
-			      created_at: new Date(),
-			      updated_at: new Date()
-			    }
-			  ];
-			};
+		  notes = [
+		    ...notes,
+		    {
+		      id: uuid(),
+		      title: "New task list",
+		      type: "tasklist",
+		      created_at: new Date(),
+		      updated_at: new Date()
+		    }
+		  ];
+		};
 
-			const renameNote = note => e => {
-			  e.preventDefault();
+		const renameNote = note => e => {
+		  e.preventDefault();
 
-			  editNameNote = note;
-			};
+		  editNameNote = note;
+		};
 
-			const deleteNote = idx => e => {
-			  e.preventDefault();
+		const deleteNote = idx => e => {
+		  e.preventDefault();
 
-			  notes = notes.filter((note, i) => i !== idx);
-			};
+		  notes = notes.filter((note, i) => i !== idx);
+		};
 
-			const updateNote = idx => value => {
-			  notes = notes.map((note, i) => {
-			    if (i === idx) {
-			      return {
-			        ...note,
-			        content: value,
-			        updated_at: new Date()
-			      };
-			    }
+		const updateNote = idx => value => {
+		  notes = notes.map((note, i) => {
+		    if (i === idx) {
+		      return {
+		        ...note,
+		        content: value,
+		        updated_at: new Date()
+		      };
+		    }
 
-			    return note;
-			  });
-			};
+		    return note;
+		  });
+		};
 
-			const updateNoteName = (originalNote, update) => e => {
-			  e.preventDefault();
+		const updateNoteName = (originalNote, update) => e => {
+		  e.preventDefault();
 
-			  notes = notes.map((note, i) => {
-			    if (originalNote.id === note.id) {
-			      return {
-			        ...note,
-			        ...update,
-			        updated_at: new Date()
-			      };
-			    }
+		  notes = notes.map((note, i) => {
+		    if (originalNote.id === note.id) {
+		      return {
+		        ...note,
+		        ...update,
+		        updated_at: new Date()
+		      };
+		    }
 
-			    return note;
-			  });
+		    return note;
+		  });
 
-			  editNameNote = {};
-			};
+		  editNameNote = {};
+		};
 
-			let save;
-			$: save = runEffect(() => {
-			  console.log(JSON.stringify(localStorage.removeItem("ephNotes")));
-			  const ephNotes = JSON.parse(localStorage.getItem("ephNotes"));
+		let save;
+		$: save = runEffect(() => {
+		  console.log(JSON.stringify(localStorage.removeItem("ephNotes")));
+		  const ephNotes = JSON.parse(localStorage.getItem("ephNotes"));
 
-			  if (!ephNotes) {
-			    return localStorage.setItem("ephNotes", notes);
-			  }
+		  if (!ephNotes) {
+		    return localStorage.setItem("ephNotes", notes);
+		  }
 
-			  if (new Date(ephNotes.date) > lastUpdated || !lastUpdated) {
-			    notes = ephNotes.notes;
-			    lastUpdated = ephNotes.date;
+		  if (new Date(ephNotes.date) > lastUpdated || !lastUpdated) {
+		    notes = ephNotes.notes;
+		    lastUpdated = ephNotes.date;
 
-			    return;
-			  }
+		    return;
+		  }
 
-			  lastUpdated = new Date();
+		  lastUpdated = new Date();
 
-			  console.log("Test: ", JSON.stringify({ notes, date: lastUpdated }));
-			  localStorage.setItem(
-			    "ephNotes",
-			    JSON.stringify({ notes, date: lastUpdated })
-			  );
-			});
+		  console.log("Test: ", JSON.stringify({ notes, date: lastUpdated }));
+		  localStorage.setItem(
+		    "ephNotes",
+		    JSON.stringify({ notes, date: lastUpdated })
+		  );
+		});
 
-			let focus;
-			$: focus = runEffect(() => {
-			  if (editNameNote && editNameEditor) {
-			    return editNameEditor.focus();
-			  }
+		let focus;
+		$: focus = runEffect(() => {
+		  if (editNameNote && editNameEditor) {
+		    return editNameEditor.focus();
+		  }
 
-			  if (currentNote && noteEditor) {
-			    noteEditor.focus();
-			  }
-			});
+		  if (currentNote && noteEditor) {
+		    noteEditor.focus();
+		  }
+		});
 </script>
 
 <style>
